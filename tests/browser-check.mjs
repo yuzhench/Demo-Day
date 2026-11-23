@@ -15,7 +15,8 @@ const click=id=>run(`document.getElementById(${JSON.stringify(id)}).click()`);
 const login=async value=>{await field('password',value);await run("document.getElementById('unlock').requestSubmit()")};
 await send('Runtime.enable');await send('Page.enable');
 await send('Emulation.setDeviceMetricsOverride',{width:1440,height:1100,deviceScaleFactor:1,mobile:false});
-await send('Page.navigate',{url:'http://127.0.0.1:8936/'});await until("!!document.getElementById('unlock')");
+const navigate=async()=>{const url='http://127.0.0.1:8936/?qa='+Date.now();await send('Page.navigate',{url});await until(`location.href===${JSON.stringify(url)} && document.documentElement.dataset.appReady==='true'`)};
+await navigate();
 await run('localStorage.clear()');await mkdir('test-results',{recursive:true});
 await login('incorrect-test-password');await until("document.getElementById('login-error').textContent.includes('Incorrect')");
 assert.equal(await run("document.getElementById('workspace').hidden"),true);
@@ -27,7 +28,7 @@ const testOwner=await run("document.getElementById('edit-owner').options[1].valu
 await run("document.querySelector('[data-edit=design-1]').click()");await field('edit-owner',testOwner);await field('edit-status','doing');await field('edit-date','2026-11-27');await field('edit-notes','Browser test note <script> — 中文');
 await run("document.getElementById('edit-form').requestSubmit()");await until("!document.getElementById('editor').open");
 const encrypted=await run("localStorage.getItem('demo-day-2026-progress-v1')");assert(encrypted);assert(!encrypted.includes(testOwner));assert(!encrypted.includes('Browser test'));
-await send('Page.reload');await until("!!document.getElementById('unlock')");await login(password);await until("!document.getElementById('workspace').hidden");
+await navigate();await login(password);await until("!document.getElementById('workspace').hidden");
 await run("document.querySelector('[data-edit=design-1]').click()");assert.equal(await run("document.getElementById('edit-owner').value"),testOwner);assert.equal(await run("document.getElementById('edit-notes').value"),'Browser test note <script> — 中文');await click('close-editor');
 await run("document.querySelector('[data-check=design-2]').click()");await until("document.getElementById('required-number').textContent==='1 / 7'");
 await field('search','rehearsal');await run("document.getElementById('search').dispatchEvent(new Event('input'))");assert.equal(await run("document.querySelectorAll('.task-row').length"),1);
@@ -41,12 +42,12 @@ await run("document.querySelector('[data-check=design-2]').click()");await until
 await send('DOM.enable');const doc=await send('DOM.getDocument');const node=await send('DOM.querySelector',{nodeId:doc.root.nodeId,selector:'#import-file'});
 await send('DOM.setFileInputFiles',{nodeId:node.nodeId,files:[process.cwd()+'/test-results/import.json']});await until("document.getElementById('required-number').textContent==='1 / 7'");
 // Clean preview state before screenshots and handoff.
-await run('localStorage.clear()');await click('lock-top');await until("!!document.getElementById('unlock')");
+await run('localStorage.clear()');await click('lock-top');await until("document.documentElement.dataset.appReady==='true' && !!document.getElementById('workspace') && document.getElementById('workspace').hidden");
 assert.equal(await run("document.getElementById('workspace').hidden"),true);await login(password);await until("!document.getElementById('workspace').hidden");
 assert.equal(await run("document.getElementById('progress-number').textContent"),'0%');
 let shot=await send('Page.captureScreenshot',{format:'png'});await writeFile('test-results/desktop.png',Buffer.from(shot.data,'base64'));
 await send('Emulation.setDeviceMetricsOverride',{width:390,height:844,deviceScaleFactor:1,mobile:true});
 assert.equal(await run('document.documentElement.scrollWidth<=390'),true);
 shot=await send('Page.captureScreenshot',{format:'png'});await writeFile('test-results/mobile.png',Buffer.from(shot.data,'base64'));
-await click('lock-top');await until("!!document.getElementById('unlock')");assert.equal(await run('document.documentElement.scrollWidth<=390'),true);
+await click('lock-top');await until("document.documentElement.dataset.appReady==='true' && !!document.getElementById('workspace') && document.getElementById('workspace').hidden");assert.equal(await run('document.documentElement.scrollWidth<=390'),true);
 assert.deepEqual(errors,[]);socket.close();console.log('PASS: wrong/correct password, 32 tasks, 7 requirements, filters, edit, encrypted persistence, reload, export/import, lock, mobile layout, no browser exceptions.');

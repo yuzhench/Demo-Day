@@ -112,3 +112,5 @@ $('import-file').addEventListener('change',async event=>{
 });
 // Never overwrite edits silently when another tab changes this browser’s copy.
 window.addEventListener('storage',event=>{if(event.key===STORAGE&&key)toast('Progress changed in another tab. Lock and reopen to load it before editing.')});
+
+document.documentElement.dataset.appReady='true';
