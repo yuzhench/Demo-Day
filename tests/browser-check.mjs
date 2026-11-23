@@ -9,11 +9,11 @@ let seq=0;const pending=new Map();const errors=[];
 socket.onmessage=event=>{const m=JSON.parse(event.data);if(m.id){const p=pending.get(m.id);pending.delete(m.id);m.error?p.reject(m.error):p.resolve(m.result)}else if(m.method==='Runtime.exceptionThrown')errors.push(m.params.exceptionDetails.text);else if(m.method==='Page.javascriptDialogOpening')send('Page.handleJavaScriptDialog',{accept:true})};
 function send(method,params={}){return new Promise((resolve,reject)=>{const id=++seq;pending.set(id,{resolve,reject});socket.send(JSON.stringify({id,method,params}))})}
 async function run(expression){const r=await send('Runtime.evaluate',{expression,awaitPromise:true,returnByValue:true});if(r.exceptionDetails)throw new Error(r.exceptionDetails.text);return r.result.value}
-async function until(expression){for(let i=0;i<100;i++){if(await run(expression))return;await new Promise(r=>setTimeout(r,100))}throw new Error('Timed out: '+expression)}
+async function until(expression){for(let i=0;i<100;i++){if(await run(expression))return;await new Promise(r=>setTimeout(r,100))}throw new Error('Timed out: '+expression+' '+JSON.stringify({errors,page:await run('({url:location.href,title:document.title,state:document.readyState,text:document.body.innerText.slice(0,600)})')}))}
 const field=(id,value)=>run(`document.getElementById(${JSON.stringify(id)}).value=${JSON.stringify(value)}`);
 const click=id=>run(`document.getElementById(${JSON.stringify(id)}).click()`);
 const login=async value=>{await field('password',value);await run("document.getElementById('unlock').requestSubmit()")};
-await send('Runtime.enable');await send('Page.enable');
+await send('Runtime.enable');await send('Page.enable');await send('Network.enable');await send('Network.setCacheDisabled',{cacheDisabled:true});
 await send('Emulation.setDeviceMetricsOverride',{width:1440,height:1100,deviceScaleFactor:1,mobile:false});
 const navigate=async()=>{const url='http://127.0.0.1:8936/?qa='+Date.now();await send('Page.navigate',{url});await until(`location.href===${JSON.stringify(url)} && document.documentElement.dataset.appReady==='true'`)};
 await navigate();
