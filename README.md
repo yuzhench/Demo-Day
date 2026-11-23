@@ -33,7 +33,11 @@ Publish only the checkout and its encrypted `dist/` directory. Never add the pri
 
 ## GitHub Pages
 
-Create a new public repository, push branch `main`, and set Pages source to **GitHub Actions**. `.github/workflows/pages.yml` tests the encryption functions and deploys the pre-encrypted `dist/`. It needs no password or private task source in GitHub Actions. HTTPS is provided by Pages.
+Repository: https://github.com/yuzhench/Demo-Day
+
+Deployment target after enabling Pages: https://yuzhench.github.io/Demo-Day/
+
+In [Settings → Pages](https://github.com/yuzhench/Demo-Day/settings/pages), set **Build and deployment → Source → GitHub Actions**. Then push to `main` or run the **Publish encrypted task board** workflow from the Actions tab. `.github/workflows/pages.yml` tests the encryption functions and deploys the pre-encrypted `dist/`. It needs no password or private task source in GitHub Actions. HTTPS is provided by Pages.
 
 ## Verification
 
