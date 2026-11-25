@@ -79,7 +79,12 @@ export function createHandler(fetcher=fetch){
       if(origin&&origin!==allowed)fail(403,'This origin is not allowed.');
       if(request.method==='OPTIONS')return new Response(null,{status:204,headers});
       const url=new URL(request.url),path=url.pathname.replace(/^\/api/,'');
-      if(path==='/health')return respond({ready:['GITHUB_TOKEN','PASSWORD_SHA256','SESSION_SECRET','DATA_KEY','DATA_SALT'].every(k=>!!env[k]),maxFileBytes:MAX_FILE_BYTES});
+      if(path==='/health'){
+        const configured=['GITHUB_TOKEN','PASSWORD_SHA256','SESSION_SECRET','DATA_KEY','DATA_SALT'].every(k=>!!env[k]);
+        if(!configured)return respond({ready:false,maxFileBytes:MAX_FILE_BYTES},503);
+        await readState(env);
+        return respond({ready:true,maxFileBytes:MAX_FILE_BYTES});
+      }
       if(!['GITHUB_TOKEN','PASSWORD_SHA256','SESSION_SECRET','DATA_KEY','DATA_SALT'].every(k=>env[k]))fail(503,'Shared workspace is not configured yet.');
       if(path==='/auth'&&request.method==='POST'){
         const ip=limited(request),input=await bodyJSON(request),actor=text(input.name,80),password=text(input.password,200);

@@ -2,11 +2,11 @@
 
 A responsive, password-encrypted task board on GitHub Pages. Every task includes a visible requirement summary, deadline, deliverables, and completion guidance. Organizer requirements remain distinct from internal suggestions.
 
-The shared-sync implementation is included but **not enabled until an authenticated HTTPS backend is configured**. An empty `sync-config.json` keeps the existing browser-local mode. Do not describe local test results as a production connection to GitHub.
+Team collaboration is enabled through the authenticated HTTPS service at `https://demo-day-team-sync.yuzhench.chatgpt.site`. Progress, attachments, links and activity are encrypted before being saved to the `team-data` branch. Visitors enter the team password and their own name.
 
 ## User guide
 
-Open the English [How to use](https://yuzhench.github.io/Demo-Day/guide.html) page, also linked from the login screen and board toolbar. It explains saving, task requirements, backups, files and activity, and reads the current configuration to distinguish available local features from shared features that are not yet enabled. No password or private task data is included in this public guide.
+Open the English [How to use](https://yuzhench.github.io/Demo-Day/guide.html) page, also linked from the login screen and board toolbar. It explains saving, task requirements, backups, files and activity, and checks the service and its storage connection to report current availability. No password or private task data is included in this public guide.
 
 ## Privacy and persistence
 
@@ -52,7 +52,7 @@ Shared mode supports task updates, named HTTPS links, encrypted file uploads/dow
 
 Repository: https://github.com/yuzhench/Demo-Day
 
-Deployment target after enabling Pages: https://yuzhench.github.io/Demo-Day/
+Live website: https://yuzhench.github.io/Demo-Day/
 
 In [Settings → Pages](https://github.com/yuzhench/Demo-Day/settings/pages), set **Build and deployment → Source → GitHub Actions**. Then push to `main` or run the **Publish encrypted task board** workflow from the Actions tab. `.github/workflows/pages.yml` tests the encryption functions and deploys the pre-encrypted `dist/`. It needs no password or private task source in GitHub Actions. HTTPS is provided by Pages.
 
@@ -63,3 +63,5 @@ In [Settings → Pages](https://github.com/yuzhench/Demo-Day/settings/pages), se
 `tests/mock-sync-server.mjs` takes the workspace password on stdin and serves ephemeral mock GitHub storage on localhost:8937 plus an isolated frontend on localhost:8938. `tests/browser-sync-check.mjs` verifies two independent browser contexts, shared notes/links, edit conflicts, uploads/downloads, oversize guidance, activity and responsive layout. **These tests do not write to real GitHub.** Test artifacts are excluded from Git.
 
 Source content was reconciled on November 23, 2026; task requirement descriptions were expanded on November 24. Organizer deadlines are kept separate from editable internal target dates. Unassigned individual ownership is not inferred from group responsibility. The 2–3-minute limit is for the spoken pitch; the deck is due November 30, with no stated submission cutoff time and no slide-count limit.
+
+The hosted backend is maintained in the sibling `sync-service/` checkout using the Sites Worker ESM workflow. Its `worker/index.js` mirrors `backend/worker.mjs`; apply backend changes to both before deploying. Runtime credentials live in Sites secrets, not in either repository.

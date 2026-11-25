@@ -35,3 +35,10 @@ test('uploads encrypt files, record uploader, download original bytes and reject
  r=await a.call('/files?task=pitch-4&name=..%2Fsecrets',{method:'POST',body:'x'});assert.equal(r.status,400);
  assert.equal((await b.call('/files/00000000-0000-0000-0000-000000000000')).status,404);
 });
+
+test('health checks real storage readiness and rejects missing credentials',async()=>{
+ const f=fixture(),c=client(f);
+ assert.equal((await c.call('/health')).status,200);
+ f.env.GITHUB_TOKEN='invalid';assert.equal((await c.call('/health')).status,503);
+ delete f.env.GITHUB_TOKEN;const r=await c.call('/health');assert.equal(r.status,503);assert.equal((await r.json()).ready,false);
+});
