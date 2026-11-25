@@ -3,5 +3,5 @@
   "version": "1.0.0",
   "private": true,
   "type": "module",
-  "scripts": {"test": "node --test tests/crypto.test.mjs", "build": "node scripts/build.mjs"}
+  "scripts": {"test": "node --test tests/crypto.test.mjs tests/sync.test.mjs", "build": "node scripts/build.mjs"}
 }

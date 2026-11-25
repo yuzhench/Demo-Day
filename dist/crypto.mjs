@@ -1,5 +1,5 @@
 export const ITERATIONS = 600000;
-const encode = value => btoa(String.fromCharCode(...new Uint8Array(value)));
+const encode = value => { const data=new Uint8Array(value);let result='';for(let offset=0;offset<data.length;offset+=0x6000)result+=btoa(String.fromCharCode(...data.subarray(offset,offset+0x6000)));return result; };
 const decode = value => Uint8Array.from(atob(value), c => c.charCodeAt(0));
 export async function deriveKey(password, salt) {
   const raw = await crypto.subtle.importKey('raw', new TextEncoder().encode(password), 'PBKDF2', false, ['deriveKey']);

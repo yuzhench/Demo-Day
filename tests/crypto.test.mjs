@@ -14,3 +14,7 @@ test('published payload is an encrypted envelope',async()=>{
  const p=JSON.parse(await readFile('dist/payload.json','utf8'));
  assert.equal(p.version,1);assert.equal(Buffer.from(p.salt,'base64').length,16);assert.equal(Buffer.from(p.iv,'base64').length,12);assert(p.ciphertext.length>1000);assert.equal(p.tasks,undefined);
 });
+
+test('encrypts larger shared progress without exceeding the JavaScript call stack',async()=>{
+ const key=await deriveKey('large-test',newSalt()),input={notes:'x'.repeat(250000)};assert.deepEqual(await decrypt(await encrypt(input,key),key),input);
+});
