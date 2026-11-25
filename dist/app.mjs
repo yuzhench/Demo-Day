@@ -73,6 +73,13 @@ function renderActivity(){
 }
 function setup(){
   $('project-description').textContent=data.description;
+  if(data.materialsFolder?.url){
+    const url=new URL(data.materialsFolder.url);
+    if(url.origin==='https://drive.google.com'&&url.pathname.startsWith('/drive/folders/')){
+      $('materials-link').href=url.href;$('materials-folder').href=url.href;
+      $('materials-link').hidden=false;$('materials-card').hidden=false;
+    }
+  }
   $('rsvp').href=data.eventUrl;$('contact').href=`mailto:${data.contact}`;
   $('team').innerHTML=data.people.filter(p=>p.role==='Design'||p.role==='Technology').map(p=>`<div class="team-person"><span class="avatar">${esc(initials(p.name))}</span><div><b>${esc(p.name)}</b><small>${esc(p.role)}</small></div></div>`).join('');
   const owners=[...new Set([...data.people.map(p=>p.name),...Object.values(state).map(s=>s.owner).filter(Boolean)])];
