@@ -10,7 +10,7 @@ try { salt=JSON.parse(await readFile('dist/payload.json','utf8')).salt; } catch 
 salt ||= newSalt(); const key=await deriveKey(password,salt);
 const payload={version:1,salt,...await encrypt(data,key)};
 await mkdir('dist',{recursive:true});
-for(const f of ['index.html','styles.css','app.mjs','crypto.mjs','sync.mjs','sync-config.json']) await copyFile(f,`dist/${f}`);
+for(const f of ['index.html','styles.css','app.mjs','crypto.mjs','sync.mjs','sync-config.json','guide.html','guide.css','guide.mjs']) await copyFile(f,`dist/${f}`);
 await writeFile('dist/payload.json',JSON.stringify(payload));
 await writeFile('dist/.nojekyll','');
 console.log(`Built encrypted site: ${data.tasks.length} tasks. No plaintext task data in dist.`);

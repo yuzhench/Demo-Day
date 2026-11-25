@@ -4,6 +4,10 @@ A responsive, password-encrypted task board on GitHub Pages. Every task includes
 
 The shared-sync implementation is included but **not enabled until an authenticated HTTPS backend is configured**. An empty `sync-config.json` keeps the existing browser-local mode. Do not describe local test results as a production connection to GitHub.
 
+## User guide
+
+Open the bilingual [How to use / 使用说明](https://yuzhench.github.io/Demo-Day/guide.html) page, also linked from the login screen and board toolbar. It explains saving, task requirements, backups, files and activity, and reads the current configuration to distinguish available local features from shared features that are not yet enabled. No password or private task data is included in this public guide.
+
 ## Privacy and persistence
 
 - The public deployment contains an AES-256-GCM encrypted task payload. The key is derived in the browser using PBKDF2-SHA-256, a random 16-byte salt and 600,000 iterations. Each encryption uses a fresh 12-byte IV.
