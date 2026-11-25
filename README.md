@@ -6,7 +6,7 @@ The shared-sync implementation is included but **not enabled until an authentica
 
 ## User guide
 
-Open the bilingual [How to use / 使用说明](https://yuzhench.github.io/Demo-Day/guide.html) page, also linked from the login screen and board toolbar. It explains saving, task requirements, backups, files and activity, and reads the current configuration to distinguish available local features from shared features that are not yet enabled. No password or private task data is included in this public guide.
+Open the English [How to use](https://yuzhench.github.io/Demo-Day/guide.html) page, also linked from the login screen and board toolbar. It explains saving, task requirements, backups, files and activity, and reads the current configuration to distinguish available local features from shared features that are not yet enabled. No password or private task data is included in this public guide.
 
 ## Privacy and persistence
 
